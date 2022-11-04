@@ -1,87 +1,139 @@
 function getComputerChoice() {
-    // Create a list of choices
-    const choices = ['Rock', 'Paper', 'Scissors'];
+    // Create the list of choices
+    const choices = ['rock', 'paper', 'scissors'];
 
-    // Randomly select and return one of the choices
+    // Randomly select one of the choices
     let randomNumber = Math.floor(Math.random() * 300 / 100);
 
+    // Return the choice
     return choices[randomNumber];
 }
 
-function playRound(playerChoice, computerChoice) {
-    // If we don't get a player's choice, stop the round
-    console.log(playerChoice);
-    if (playerChoice === null) return;
-
-    // convert the choices to lowercase for clean comparison
-    let playerChoiceLowerCase = playerChoice.toLowerCase();
-    let computerChoiceLowerCase = computerChoice.toLowerCase();
+function didPlayerWin() {
+    // Get choices
+    let playerChoice = document.querySelector('.finalChoice-player').getAttribute('data-choice');
+    let computerChoice = document.querySelector('.finalChoice-computer').getAttribute('data-choice');
 
     // If choices are the same return null
-    if (playerChoiceLowerCase === computerChoiceLowerCase) {
+    if (playerChoice === computerChoice) {
         return null;
     }
 
     // If player's choice wins return true otherwise return false
-    switch (playerChoiceLowerCase) {
+    switch (playerChoice) {
         case 'rock':
-            return (computerChoiceLowerCase === 'paper') ? false : true; 
-            break;
+            return (computerChoice === 'paper') ? false : true; 
 
         case 'paper':
-            return (computerChoiceLowerCase === 'scissors') ? false : true; 
-            break;
+            return (computerChoice === 'scissors') ? false : true; 
 
         case 'scissors':
-            return (computerChoiceLowerCase === 'rock') ? false : true; 
-            break;
+            return (computerChoice === 'rock') ? false : true; 
     }
 }
 
 function game() {
+    const maxScore = 5;
+    const playerChoiceButtons = document.querySelectorAll('.playerChoice');
+    let gameHasStarted = 0;
     let scorePlayer = 0;
     let scoreComputer = 0;
+    let playerChoice;
+    let computerChoice;
+    let playerWins;
 
-    // Run the game 5 times
-    for (let i = 1; i <= 5; i++) {
-        // Prompt the user
-        let playerChoice = prompt(`Game ${i}: Make your choice! Rock, Paper or Scissors?`);
-        
-        // Get Computer choice
-        let computerChoice = getComputerChoice(); 
+    // Scale in fists
+    const finalChoiceNodes = document.querySelectorAll('.finalChoice');
+    finalChoiceNodes.forEach(finalChoiceNode => {
+        finalChoiceNode.setAttribute('data-choice', 'rock');
+    });
 
-        // Set result messages
-        const playerChoiceString = `You chose ${playerChoice}.`;
-        const computerChoiceString = `The computer chose ${computerChoice}.`;
-        const winMessage = `${playerChoiceString}\n${computerChoiceString}\n\nYou Win! ${playerChoice} beats ${computerChoice}`;
-        const looseMessage = `${playerChoiceString}\n${computerChoiceString}\n\nYou Lose! ${computerChoice} beats ${playerChoice}`;
-        const drawMessage = `${playerChoiceString}\n${computerChoiceString}\n\nTwo times ${playerChoice}, it's a draw!`;
+    // Let player choose
+    playerChoiceButtons.forEach(playerChoiceButton => {
+        playerChoiceButton.addEventListener('click', (e) => {
+            // get Player's choice
+            playerChoice = e.target.getAttribute('data-choice');
+            // Get Computer's choice
+            computerChoice = getComputerChoice();
+            // Set Player's choice button to active
+            e.target.classList.add('playerChoice-active');
+            // Stop player choice buttons pulse
+            playerChoiceButtons.forEach(playerChoiceButton => {
+                playerChoiceButton.style.animation = 'none';
+            });
+            // Set a class to the final choices to signal that the player made a choice
+            finalChoiceNodes.forEach(finalChoiceNode => {
+                finalChoiceNode.classList.add('startRound');
+                if (gameHasStarted) {
+                    finalChoiceNodes.forEach(finalChoiceNode => {
+                        finalChoiceNode.setAttribute('data-choice', 'rock');
+                        finalChoiceNode.classList.add('shakeFists');
+                    });
+                }
+            });
+        });
+    });
 
-        // Play a round
-        let playerWon = playRound(playerChoice, computerChoice);
-        switch (playerWon) {
-            case null:
-                alert(drawMessage);
-                break;
-
-            case true:
-                // We won! Keep score
-                scorePlayer++;
-
-                alert(winMessage);
-                break;
-
-            case false:
-                // Computer won... Keep score
-                scoreComputer++;
-
-                alert(looseMessage);
-                break;
+    // Play a round
+    document.querySelector('.finalChoice-player').addEventListener('animationend', (event) => {
+        // When Fists are scaled in
+        if (event.animationName === 'scaleIn') {
+            // Set a class to the final choices to signal that the fists are ready to shake
+            finalChoiceNodes.forEach(finalChoiceNode => {
+                finalChoiceNode.classList.add('shakeFists');
+                gameHasStarted = 1;
+            });
         }
-        alert(`The score is: Player ${scorePlayer} vs Computer ${scoreComputer}`);
-    };
 
-    alert(`The Final score is: Player ${scorePlayer} vs Computer ${scoreComputer}`);
+        // When shaking fists animation ends, set final choices
+        if (event.animationName === 'shakeFists-player') {
+            document.querySelector('.finalChoice-player').setAttribute('data-choice', playerChoice);
+            document.querySelector('.finalChoice-computer').setAttribute('data-choice', computerChoice);
+            // Show winner
+            playerWins = didPlayerWin();
+            if (playerWins === null) {
+                // It's a draw
+            } else if (playerWins) {
+                // Player won
+                scorePlayer++;
+                document.querySelector('.score-player > div').textContent = scorePlayer;
+            } else {
+                // Computer won
+                scoreComputer++;
+                document.querySelector('.score-computer > div').textContent = scoreComputer;
+            }
+            // Announce the winner and show New Game Button
+            if (scorePlayer === maxScore || scoreComputer === maxScore) {
+                document.querySelector('.newGame').style.display = 'block';
+                document.querySelector('h1').classList.add('winner');
+                if (scorePlayer === maxScore) {
+                    document.querySelector('h1').classList.add('winner-player');
+                    document.querySelector('h1').textContent = 'Player won the game!';
+                } else if (scoreComputer === maxScore) {
+                    document.querySelector('h1').classList.add('winner-computer');
+                    document.querySelector('h1').textContent = 'Computer won the game!';
+                }
+            } else {
+                // Reset classes to get ready for a new round
+                playerChoiceButtons.forEach(playerChoiceButton => {
+                    playerChoiceButton.classList.remove('playerChoice-active');
+                });
+                finalChoiceNodes.forEach(finalChoiceNode => {
+                    finalChoiceNode.classList.remove('shakeFists', 'startRound');
+                });
+                // start player choice buttons pulse
+                playerChoiceButtons.forEach(playerChoiceButton => {
+                    playerChoiceButton.style.animation = 'pulse 2s infinite';
+                });
+            }
+        }
+    });
+
+    // Start a new game
+    document.querySelector('.newGame').addEventListener('click', (e) => {
+        location.reload();
+    });
+    
 }
 
 game();

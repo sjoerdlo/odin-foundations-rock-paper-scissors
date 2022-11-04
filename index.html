@@ -4,10 +4,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odin Foundations - Rock Paper Scissors</title>
-    <script src="js/script.js"></script>
+    <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
 </head>
 <body>
-    <h1>Odin Foundations - Rock Paper Scissors</h1>
+    <div class="container">
+        <div class="score">
+            <div class="score-player">Player <div>0</div></div>
+            <div>
+                <button class="newGame">New Game</button>
+            </div>
+            <div class="score-computer">Computer <div>0</div></div>
+        </div>
+
+        <h1>- Rock Paper Scissors -</h1>
+        <div class="finalChoices">
+            <div class="finalChoice finalChoice-player"></div>
+            <div class="finalChoicesDivider">VS</div>
+            <div class="finalChoice finalChoice-computer"></div>
+        </div>
+        
+        <h2>Make your choice:</h2>
+        <ul class="playerChoices">
+            <li><button class="playerChoice playerChoice-rock" data-choice="rock">Rock</button></li>
+            <li><button class="playerChoice playerChoice-paper" data-choice="paper">Paper</button></li>
+            <li><button class="playerChoice playerChoice-scissors" data-choice="scissors">Scissors</button></li>
+        </ul>
+    </div>
+    
 </body>
 </html>
