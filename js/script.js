@@ -108,10 +108,10 @@ function game() {
                 document.querySelector('h1').classList.add('winner');
                 if (scorePlayer === maxScore) {
                     document.querySelector('h1').classList.add('winner-player');
-                    document.querySelector('h1').textContent = 'Player won the game!';
+                    document.querySelector('h1').textContent = 'Player wins!';
                 } else if (scoreComputer === maxScore) {
                     document.querySelector('h1').classList.add('winner-computer');
-                    document.querySelector('h1').textContent = 'Computer won the game!';
+                    document.querySelector('h1').textContent = 'Computer wins!';
                 }
             } else {
                 // Reset classes to get ready for a new round
