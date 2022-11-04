@@ -162,6 +162,16 @@ h2 {
 	}
 }
 
+.finalChoice-winner {
+	background-color: #ffd53380;
+	transition: background-color 1s linear;
+}
+
+.finalChoice-draw {
+	background-color: #00000090;
+	transition: background-color 1s linear;
+}
+
 .finalChoicesDivider {
 	color: red;
 	font-size: 50px;

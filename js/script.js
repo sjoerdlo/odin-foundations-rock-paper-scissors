@@ -51,6 +51,9 @@ function game() {
     // Let player choose
     playerChoiceButtons.forEach(playerChoiceButton => {
         playerChoiceButton.addEventListener('click', (e) => {
+            finalChoiceNodes.forEach(finalChoiceNode => {
+                finalChoiceNode.classList.remove('finalChoice-draw', 'finalChoice-winner');
+            });
             // get Player's choice
             playerChoice = e.target.getAttribute('data-choice');
             // Get Computer's choice
@@ -93,14 +96,18 @@ function game() {
             playerWins = didPlayerWin();
             if (playerWins === null) {
                 // It's a draw
+                document.querySelector('.finalChoice-player').classList.add('finalChoice-draw');
+                document.querySelector('.finalChoice-computer').classList.add('finalChoice-draw');
             } else if (playerWins) {
                 // Player won
                 scorePlayer++;
                 document.querySelector('.score-player > div').textContent = scorePlayer;
+                document.querySelector('.finalChoice-player').classList.add('finalChoice-winner');
             } else {
                 // Computer won
                 scoreComputer++;
                 document.querySelector('.score-computer > div').textContent = scoreComputer;
+                document.querySelector('.finalChoice-computer').classList.add('finalChoice-winner');
             }
             // Announce the winner and show New Game Button
             if (scorePlayer === maxScore || scoreComputer === maxScore) {
